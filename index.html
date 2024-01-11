@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #calculator {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    #display {
+      font-size: 2em;
+      padding: 10px;
+      text-align: right;
+      border-bottom: 1px solid #ccc;
+    }
+
+    #buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    button {
+      font-size: 1.5em;
+      padding: 15px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:active {
+      background-color: #eee;
+    }
+
+    button.operator {
+      background-color: #ff8c00;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<div id="calculator">
+  <div id="display">0</div>
+  <div id="buttons">
+    <button>7</button>
+    <button>8</button>
+    <button>9</button>
+    <button class="operator">/</button>
+
+    <button>4</button>
+    <button>5</button>
+    <button>6</button>
+    <button class="operator">*</button>
+
+    <button>1</button>
+    <button>2</button>
+    <button>3</button>
+    <button class="operator">-</button>
+
+    <button>0</button>
+    <button>.</button>
+    <button class="operator">+</button>
+    <button onclick="clearCalculator()">C</button>
+    <button class="operator">=</button>
+  </div>
+</div>
+
+<script>
+  const display = document.getElementById('display');
+  const buttons = document.getElementById('buttons');
+
+  let currentInput = '';
+  let currentOperator = '';
+  let previousInput = '';
+
+  buttons.addEventListener('click', (event) => {
+    const buttonValue = event.target.textContent;
+
+    if (!isNaN(buttonValue) || buttonValue === '.') {
+      currentInput += buttonValue;
+      updateDisplay();
+    } else if (buttonValue === 'C') {
+      clearCalculator();
+    } else if (buttonValue === '=') {
+      calculateResult();
+    } else {
+      handleOperator(buttonValue);
+    }
+  });
+
+  function updateDisplay() {
+    display.textContent = currentInput;
+  }
+
+  function clearCalculator() {
+    currentInput = '';
+    currentOperator = '';
+    previousInput = '';
+    updateDisplay();
+  }
+
+  function calculateResult() {
+    if (currentInput !== '' && previousInput !== '') {
+      const num1 = parseFloat(previousInput);
+      const num2 = parseFloat(currentInput);
+
+      switch (currentOperator) {
+        case '+':
+          currentInput = (num1 + num2).toString();
+          break;
+        case '-':
+          currentInput = (num1 - num2).toString();
+          break;
+        case '*':
+          currentInput = (num1 * num2).toString();
+          break;
+        case '/':
+          currentInput = (num1 / num2).toString();
+          break;
+        default:
+          break;
+      }
+
+      currentOperator = '';
+      previousInput = '';
+      updateDisplay();
+    }
+  }
+
+  function handleOperator(operator) {
+    if (currentInput !== '') {
+      if (previousInput !== '') {
+        calculateResult();
+      } else {
+        previousInput = currentInput;
+      }
+
+      currentOperator = operator;
+      currentInput = '';
+    }
+  }
+</script>
+
+</body>
+</html>
